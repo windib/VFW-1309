@@ -1,0 +1,44 @@
+/*
+ *
+ *Title: index.html
+ *By: Windi Bahl
+ *Project 2
+ *VFW 1307
+ *
+ */
+
+
+
+h1 {
+    margin:  15px 20px;
+    border: 1px solid black;
+    padding: 10px;
+    background-color: #5B59BA;
+}
+
+legend {
+    color: white;
+    font-size: 20px;
+}
+
+p{
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+li{
+    list-style-type: circle;
+    font-size: 18px
+}
+a{
+    outline: 1px dotted black;
+}
+
+a:hover{
+    color: #FFE600;
+    outline: none;
+}
+
+body{
+    background-color: #F7B3DA
+}
