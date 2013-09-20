@@ -1,143 +1,259 @@
 //Windi Bahl
-//VFW 1305
-//7-17-13
-//Project 2
+//VFW 1309
+//Week 3
+//Project 3
 
 window.addEventListener("DOMContentLoaded", function(){
     
-    function s(x) {
-     var element = document.getElementById(x);
-     return element
+    // getElementById Function
+    function $(x){
+        var theElement = document.getElementById(x);
+        return theElement;
     }
     
-    function makeCatergories(){
-        var formTag = document.getElementsByTagName("form");
-        var selectLi = s('select');
-        var makeSelect = document.createElement('select');
-        makeSelect.setAttribute("id", "groups");
-        for (var i=0, j=accountList.length; i<j; i++) {
+    //Create 'Select Field' element, and pop with options
+    function makeCats() {
+        var formTag = document.getElementByTagName('form')
+        //will become an array of the form tags in the additem.html
+        selectLi= $('select'),
+        makeSelect = document.createElement('select')
+        makeSelect.setAttribute('id', 'groups');
+        for (var i=0,j=reviewGroups.length; i < j; i++) {
             var makeOption = document.createElement('option');
-            var optionText = accountList[i];
-            makeOption.setAttribute("value", optionText);
-            makeOption.innerHTML = optionText;
-            makeOption.appendChild(makeOption);
+            var optText = reviewGroups[i];
+            makeOption.setAttribute('value', optText);
+            makeOption.innerHTML = optText;
+            makeSelect.appendChild(makeOption);
         }
         selectLi.appendChild(makeSelect);
-    };
+    }
     
-    function getSelectedRadio(){
-        var radios = document.forms[0].primary;
-        for (var i=0; i<radios.length; i++) {
+    //Find value of selected radio button
+    function getSelectedRadio() {
+        var radios = document.forms[0].return;
+        for (var i=0; i < radios.length; i++) {
             if (radios[i].checked) {
-                primaryValue = radios[i].value;
+                returnValue = radios[i].value;
             }
         }
-    };
+    }
     
-    function toggleControls(n) {
+    //Find value of checkboxes
+    function getCheckboxValue(){
+        if ($('favorite').checked) {
+            favoriteValue = $('favorite').value;
+        }else{
+            favoriteValue = "No"
+        }
+    }
+    
+    //Toggle control
+    function toggleControls(n){
         switch (n) {
-            case "on" :
-                s('addForm').style.display = "none";
-                s('clear').style.display = "inline";
-                s('displayLink').style.display = "none";
-                s('addNew').style.display = "inline";
+            case'on':
+                $('reviewForm').style.display = 'none';
+                $('clear').style.display = 'inline';
+                $('display').style.display = 'none';
+                $('addNew').style.display = 'inline';
                 break;
-            case "off" :
-                s('addForm').style.display = "block";
-                s('clear').style.display = "inline";
-                s('displayLink').style.display = "inline";
-                s('addNew').style.display = "none";
-                s('items').style.display = "none";
+            case'off':
+                $('reviewForm').style.display = 'block';
+                $('clear').style.display = 'inline';
+                $('display').style.display = 'none';
+                $('addNew').style.display = 'none';
                 break;
             default:
                 return false;
         }
     }
     
-    function storeLocalDat() {
-        var getTool = Math.floor(Math.random()*100000001);
-        getRadios();
-        
-        var it              = {};
-            it.business     = ["Business Name", main("business").value];
-            it.type         = ["Business Type", main("type").value];
-            it.goBack       = ["Going Back", main("goBack").value];
-            it.rank         = ["Rank", main("rank").value];
-            it.experience   = ["Experience", typeValue];
-            it.again        = ["Again", typeValue];
-            it.notes        = ["Notes", main("notes").value];
-            
-            localStorage.setItem( getID, JSON.stringify(it) );
-            alert("Data has been saved!");
-            
+    //Store Data
+    function storeData(key) {
+        //only generate new if there is a new item
+        // if no key them new key is needed
+        if(key) {
+            var id =Math.floor(Math.random()*100000001);
+        } else {
+            //set id to exisiting id if item is being edited
+            //object.properties contain an array with the form label and input values
+            id = key;
+        }
+        getSelectedRadio();
+        gerCheckboxValue();
+        var item={};
+        item.groups = ['Group:', $('groups').value];
+        item.business = ['Business:', $('business').value];
+        item.type = ['Type:', $('type').value];
+        item.rating = ['Rating:', $('rating').value];
+        item.back = ['Return:', backValue];
+        item.note = ['Notes:', $('notes').value];
+        localStorage.setItem(id,JSON.stringify(item));
+        alert('Review is saved!')
     }
-
-    function getData() {
-        toggle("on");
-        
-        if (localStorgae.length === 0 ) {
-        alert ("Nothing to show")
-        }else{
-            
-            var make = document.createElement("div");
-            make.setAttribute("id", "items");
+    
+    //Show Data
+    function showData() {
+        if (localStorage.length ===0){
+            alert('No saved reviews!')
+            toggleControls('off');
+        } else {
+            toggleControls('on');
+            var makeDiv = document.createElement('div')
+            makeDiv.setAttribute('id', 'items');
             var makeList = document.createElement('ul');
-            make.appendChild(makeList);
-            docment.body.appendChild(make);
-            main('items').style.display="block";
-            
-            for (var i=0, j=localstorage.length; i<j; i++) {
-                var makeli = document.creatElement("li");
-                makeList.appendChild(makeli);
+            makeDiv.appendChild(makeList);
+            document.body.appendChild(makeDiv);
+            for (var i=0, l=localStorage.length; i<l; i++) {
+                var makeLi = document.createElement('li');
+                var linksLi = document.createElement('li');
+                makeList.appendChild(makeLi);
                 var key = localStorage.key(i);
                 var value = localStorage.getItem(key);
-                var object = JSON.parse(value);
+                var obj = JSON.parse(value);
                 var makeSubList = document.createElement('ul');
-                makeli.appendChild(makeSubList);
-                for ( var m in object ) {
-                    var makeSubLi = document.createElement("li");
+                makeLi.appendChild(makeSubList);
+                for (var n in obj) {
+                    var makeSubLi = document.createElement('li');
                     makeSubList.appendChild(makeSubLi);
-                    var optSub = object [m][0]+" : "+object[m][1];
-                    makeSubLi.innerHTML = optSub;
+                    var optSubText = obj[n][0]+""+obj[n][1];
+                    makeSubLi.innerHTML = optSubText;
+                    makeSubList.appendChild(linksLi);
                 }
+                makeItemLinks(localStorage.key(i), linksLi);
             }
         }
     }
-
-    function clearLocalData() {
-        var ruSure = confirm("Are you sure you want to clear the data?");
-        if (ruSure) {
-            if (localStorage.length === 0) {
-                alert("Local storage is empty.")
-            }else{
-                localStorage.clear();
-                alert("All data has been deleted!");
-                window.location.reload();
-                return false;
-            }
-        }
-    }
-    
-    var sliderRange = document.getElementById("range");
-    var sliderDisplay = document.getElementById("Amount");
-    
-    sliderRange.onchange = function(){
-        sliderDisplay.value = sliderRange.value;
-    }
-    
-    var addNew = ["Yes", "No", "Maybe"]
-        returnValue;
-    dropDownList();
-    
-    var display = main("Info");
-    display.addEventListener("click", getData);
-    
-    var button = main("Value");
-    button.addEventListener("click", storeLocalData);
-    
-    var clear = main("clear data");
-    clear.addEventListener("click", clearLocalData);
         
-});
+    //Make Item Links
+    
+    function makeItemLinks(key, linksLi) {
+        var editLink = document.createElement('a');
+        editLink.href = '#';
+        editLink.key = key;
+        var editText = "Edit Review";
+        editLink.addEventListener('click', editItem);
+        editLink.innerHTML = editText;
+        linksLi.appendChild(editLink);
+        
+        var breakTag = document.createElement('br');
+        linksLi.appendChild(breakTag);
+        
+        var deleteLink = document.createElement('a');
+        deleteLink.href = "#";
+        deleteLink.key = key;
+        var deleteText = "Delete Review";
+        deleteLink.addEventListener('click', deleteItem);
+        deleteLink.innerHTML = deleteText;
+        linksli.appendChild(deleteLink);
+        
+    }
+    
+    //Edit Single Item
 
 
+    function editItem (){
+        var value = localStorage.getItem(this.key);
+        var item = JSON.parse(value);
+        
+        toggleControls('off');
+        
+        $('groups').value = item.groups[1];
+        $('business').value = item.business[1];
+        $('type').value = item.type[1];
+        $('rating').value = item.rating[1];
+        $('back').value = item.goBack[1];
+        var radios = document.forms[0].back;
+        for (var i=0; i<radios.length; i++) {
+            if (radios[i].value=="happy"&&item.category[1]=="Happy") {
+                radios[i].setAttribute('checked','checked');
+            } else if (radios[i].value=="Not Happy"&&item.catergory[1]=="Not Happy") {
+                radios[i].setAttribute('checked','checked');
+            }
+        }
+        if (item.favs[1]=="Yes") {
+            $('favorite').setAttribute('checked','checked');
+        }
+        $('notes').value = item.note[1];
+        
+        saveBook.removeEventListenet('click', storeData);
+        $('submit').value = "Save Edits";
+        var editSubmit = $('submit');
+        editSubmit.addEventListener('click', validate);
+        editSubmit.key = this.key;
+    }
+    
+    //Delete Item
+    
+    function deleteItem() {
+        var ask = confirm("Are you sure you want to delete?");
+        if (ask) {
+            localStorage.removeItem(this.key);
+            alert("Deleted!!");
+            window.location.reload();
+        } else {
+            alert("The review is still saved!");
+        }
+    }
+    function validate(e) {
+        var getGroup = $('groups');
+        var getBusiness = $('business');
+        var getType = $('type');
+        var getRating = $('rating');
+        var getback = $('back');
+        var errorBox = $('errors');
+        
+        errMsg.innerHTML = "";
+        getGroup.style.border = "1px solid black";
+        getBusiness.style.border = "1px solid black";
+        getType.style.border = "1px solid black";
+        getRating.style.border = "1px solid black";
+        getback.style.border = "1px solid black";
+        errorBox.style.border = "1px solid #aaa";
+        
+        var messageAry = [];
+        
+        if (getGroup.value==="--Choose a Source--") {
+            var groupError = "Please choose a source.";
+            getGroup.style.border = "1px solid #ff8e33";
+            errorBox.style.border = "1px solid #f8e33";
+            messageAry.push(groupError);
+        }
+        
+        if (getBusiness.value==="") {
+            var businessError = "Please enter a business.";
+            getBusiness.style.border = "1px solid #ff8e33";
+            errorBox.style.border = "1px solid #f8e33";
+            messageAry.push(titleError);
+        }
+        
+        if (gettype.value==="") {
+            var TypeError = "Please enter a business type.";
+            getType.style.border = "1px solid #ff8e33";
+            errorBox.style.border = "1px solid #f8e33";
+            messageAry.push(authorError);
+        }
+        
+        if (getRating.value==="") {
+            var ratingError = "Please enter a rating.";
+            getrating.style.border = "1px solid #ff8e33";
+            errorBox.style.border = "1px solid #f8e33";
+            messageAry.push(pagesError);
+        }
+        
+        if (getBack.value==="") {
+            var backError = "Please indicate if you would return.";
+            getBack.style.border = "1px solid #ff8e33";
+            errorBox.style.border = "1px solid #f8e33";
+            messageAry.push(dateError);
+        }
+        
+        if (errorBox.value==="") {
+            var errorBoxError = "";
+            errorBox.style.border = "1px solid #ff8e33";
+            errorBox.style.border = "1px solid #f8e33";
+            messageAry.push(errorBoxError);
+        }
+        
+
+    }
+        
